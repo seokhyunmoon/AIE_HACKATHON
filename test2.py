@@ -28,6 +28,32 @@ def create_list_of_courses(course_np, report):
 
     return list_of_courses
 
+def divide_major_to_three(course_np, report):
+    major_b = []
+    major_e = []
+    major_r = []
+
+    for row in report:
+        if row[0] in course_np:
+            key = np.where(course_np == row[0])[0][0]
+            if (course_np[key][2] == '전기'):
+                major_b.append(row)
+            elif (course_np[key][2] == '전선'):
+                major_e.append(row)
+            elif (course_np[key][2] == '전필'):
+                major_r.append(row)
+
+    return major_b, major_r, major_e
+
+def create_list_of_3_4000(course_np, report):
+    list_of_courses = []
+
+    for row in report:
+        if row[0][3] == '3' or row[0][3] == '4':
+            list_of_courses.append(row)
+
+    return list_of_courses
+
 
 test_data = get_report('output.csv')
 
@@ -41,3 +67,11 @@ aie_course_np = course_csv_to_np('aie_course.csv')
 
 # 성적표 주인이 들은 Fail하지 않은 강의 중 응용정보공학전공 강의 추출하기
 print(create_list_of_courses(aie_course_np, test_data))
+
+#전기, 전필, 전선
+major_basic, major_required, major_elective = divide_major_to_three(aie_course_np, test_data)
+print(major_basic)
+print(major_required)
+print(major_elective)
+
+print(create_list_of_3_4000(aie_course_np, test_data))
