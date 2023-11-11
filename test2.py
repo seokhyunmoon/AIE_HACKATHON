@@ -68,7 +68,7 @@ aie_course_np = course_csv_to_np('aie_course.csv')
 bio_course_np = course_csv_to_np('bio_course.csv')
 media_course_np = course_csv_to_np('media_course.csv')
 intcommerce_course_np = course_csv_to_np('intcommerce_course.csv')
-korean_course_np = course_csv_to_np('korean_course.csv') #한국어 나중에 추가
+korean_course_np = course_csv_to_np('korean_course.csv')
 
 # GLC 교양 강의 목록을 ndarray로 가져오기
 
