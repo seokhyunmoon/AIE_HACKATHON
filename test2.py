@@ -3,18 +3,19 @@ import numpy as np
 
 
 def get_report(report_file):
-    list = []
-    with open(report_file, newline='', encoding='UTF8') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            list.append(row)
-    return list
-
-def course_csv_to_np(file_name):
-    with open(file_name, "r", encoding="utf-8-sig") as f:
+    with open(report_file, "r", encoding="utf-8-sig") as f:
         reader = csv.reader(f)
         data = [[c.replace('\ufeff', '') for c in row] for row in reader]
     return data
+
+def course_csv_to_np(file_name):
+    list = []
+    with open(file_name, newline='', encoding='UTF8') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            list.append(row)
+    list.pop(0)  # header row 없애기
+    return np.array(list)
 
 
 def create_list_of_courses(course_np, report):
@@ -59,4 +60,6 @@ test_data = [['GBL2001', '유기화학입문', '전기', 3, 'D'], ['GBL2004', '�
 '''
 test_data = get_report('output.csv')
 print(test_data)
+
+
 #print(create_list_of_courses(bio_course_np, test_data))
