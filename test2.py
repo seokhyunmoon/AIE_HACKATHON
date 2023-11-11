@@ -59,19 +59,46 @@ test_data = get_report('output.csv')
 
 # Fail 성적 모두 제외
 for row in test_data:
+    print("row : ", row)
     if row[4] in ['U', 'W', 'WE', 'F', 'NP']:
         test_data.remove(row)
 
-# 응용정보공학 강의 목록을 ndarray로 가져오기
+# 각 전공 강의 목록을 ndarray로 가져오기
 aie_course_np = course_csv_to_np('aie_course.csv')
+bio_course_np = course_csv_to_np('bio_course.csv')
+media_course_np = course_csv_to_np('media_course.csv')
+intcommerce_course_np = course_csv_to_np('intcommerce_course.csv')
+korean_course_np = course_csv_to_np('korean_course.csv') #한국어 나중에 추가
+
+# GLC 교양 강의 목록을 ndarray로 가져오기
+
+# GLC 영어 강의 목록을 ndarray로 가져오기
+english_course_np = course_csv_to_np('english_course.csv')
+
+# 기독교의 이해 강의 목록을 ndarray로 가져오기
+christianity_course_np = course_csv_to_np('christianity_course.csv')
+
+# 채플 강의 목록을 ndarray로 가져오기
+chapel_course_np = course_csv_to_np('chapel.csv')
+
+# RC101 강의 목록을 ndarray로 가져오기
+rc101_course_np = course_csv_to_np('rc101.csv')
 
 # 성적표 주인이 들은 Fail하지 않은 강의 중 응용정보공학전공 강의 추출하기
 print(create_list_of_courses(aie_course_np, test_data))
 
-#전기, 전필, 전선
+#성적표 주인이 들은 RC101 강의 가져오기
+print(create_list_of_courses(rc101_course_np, test_data))
+print(create_list_of_courses(chapel_course_np, test_data))
+print(create_list_of_courses(christianity_course_np, test_data))
+print(create_list_of_courses(english_course_np, test_data))
+
+#전기, 전필, 전선 리스트 생성
 major_basic, major_required, major_elective = divide_major_to_three(aie_course_np, test_data)
 print(major_basic)
 print(major_required)
 print(major_elective)
 
+#3-4000 단위 리스트 생성
 print(create_list_of_3_4000(aie_course_np, test_data))
+
