@@ -3,7 +3,7 @@ import numpy as np
 
 '''1-2'''
 def get_report(report_file):
-    with open(report_file, "r", encoding="cp949") as f:
+    with open(report_file, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         data = [[c.replace('\ufeff', '') for c in row] for row in reader]
     return data
@@ -22,8 +22,8 @@ def create_list_of_courses(course_np, report):
         if row[0] in course_np:
             # print("row  : ", row[0])
             key = np.where(course_np == row[0])[0][0]
-            if course_np[key][1] != row[1]:
-                print('학정번호의 과목 [' + course_np[key][1] + ']와/과 성적표의 과목 [' + row[1] + ']이 다릅니다.')
+            #if course_np[key][1] != row[1]:
+                #print('학정번호의 과목 [' + course_np[key][1] + ']와/과 성적표의 과목 [' + row[1] + ']이 다릅니다.')
             list_of_courses.append(row)
 
     return list_of_courses
@@ -111,8 +111,8 @@ def create_list_of_courses(course_np, report):
     for row in report:
         if row[0] in course_np:
             key = np.where(course_np == row[0])[0][0]
-            if course_np[key][1] != row[1]:
-                print('학정번호의 과목 [' + course_np[key][1] + ']와/과 성적표의 과목 [' + row[1] + ']이 다릅니다.')
+            #if course_np[key][1] != row[1]:
+                #print('학정번호의 과목 [' + course_np[key][1] + ']와/과 성적표의 과목 [' + row[1] + ']이 다릅니다.')
             list_of_courses.append(row)
 
     return list_of_courses
@@ -197,6 +197,31 @@ aie_major_basic_length = course_length_count(major_basic)
 aie_major_required_length = course_length_count(major_required)
 aie_major_elective_length = course_length_count(major_elective)
 '''
+
+major_course_list = []
+double_major_course_list = []
+minor_course_list = []
+#전공
+#요건
+major_standard = [0,0,0,0,0]
+major_kce_area_check = [0,0,0,0,0,0]
+#이수
+major_completed = [0,0,0]
+#필요
+major_needs = [0,0,0]
+
+#복전전공 (선택 시에만 존재)
+double_major_standard, double_major_kce_area_check = [0, 0, 0], [0, 0, 0, 0]
+double_major_completed = [0,0,0]
+double_major_needs = [0,0,0]
+
+#부전공 (선택 시에만)
+minor_standard, minor_icm_check, minor_kce_area_check = [0, 0, 0], [0,0,0,0,0], [0,0,0,0,0]
+minor_completed = [0,0,0]
+minor_needs = [0,0,0]
+
+#AI융합심화 추가 요건
+ai_check = [0,0]
 
 #한국언어문화교육 이수한 영역 개수 확인 (array로 리턴)
 def check_area_kce(report):
@@ -400,9 +425,6 @@ def major_ai():
             ai_check[1] = 1
     return course_list, standard, length, needs, ai_check
 
-major_course_list = []
-double_major_course_list = []
-minor_course_list = []
 def minor_major_function(minor_major):
     course_np_list = course_np_dict[minor_major]
     course_list = create_list_of_courses(course_np_list, test_data)
@@ -482,16 +504,6 @@ elif double_major == '없음':
     # 수업 리스트, 전공 학점 요건, 전공 이수 학점, 전공 부족 학점, 한국언어문화교육 영역 이수
     major_course_list, major_standard, major_completed, major_needs, major_kce_area_check = major_only(major)
     kce_only_area = [6, 6, 24, 6, 3]
-    print("------------------")
-    FINAL_DATA = []
-    FINAL_DATA.append(major_standard, major_completed, major_needs)
-
-    print(major_course_list)
-    print(major_standard)
-    print(major_completed)
-    print(major_needs)
-    print(major_kce_area_check)
-    print("------------------")
 
 # (2)복수전공 시 요건 충족 여부
 else:
@@ -507,8 +519,6 @@ if minor_major != '없음':
     # minor_kce_area_check = [영역1, 영역2, 영역3, 영역4, 영역5] <- 모두 1이어야 졸업요건 만족
     # minor_icm_check = [과목1, 과목2, 과목3, 과목4, 21학점 이상] <- 인덱스 0~3 중 2개가 1, 인덱스 4가 1이면 졸업요건 만족
 
-#TODO: 마이크로전공 추가 (major_course_eliminator 함수에도 해당 전공 수업들 추가)
-
 # 이미 들어간 수업 리스트 빼기
 def major_course_eliminator(test_data):
     remaining = []
@@ -519,7 +529,7 @@ def major_course_eliminator(test_data):
     return remaining
 
 remaining_course = major_course_eliminator(test_data)
-print(remaining_course)
+#print(remaining_course)
 
 
 #교양 요건 확인
@@ -557,12 +567,12 @@ english_pass = len(english_list) >= 2
 glcsubject_pass = glcsubject_credit >= 9
 rc101_pass =rc101_credit >=1
 
-print(chapel_pass)
-print(christianity_pass)
-print(english_pass)
-print(glcsubject_pass)
-print(rc101_pass)
-
+#print(chapel_pass)
+#print(christianity_pass)
+#print(english_pass)
+#print(glcsubject_pass)
+#print(rc101_pass)
+'''
 #TODO: 부전공 50% 이상이면 보여주기 (전공에 포함된 과목 외의 데이터만 가지고)
 def show_minor():
     # 전공별 Minor Standard
@@ -592,6 +602,8 @@ def show_minor():
             total_credit = course_length_count(minor_major_basic) + course_length_count(minor_major_required) + course_length_count(minor_major_elective)
             #TODO: 50%이상 들었는지, 각각 요건을 완료했는지 구현
 
+#TODO: 마이크로전공 추가 (major_course_eliminator 함수에도 해당 전공 수업들 추가)
+
 #기타 과목 (전체 - (전공+교양)) 구하기
 def major_and_gyoyang_course_eliminator(remaining_course):
     general_elective_list = []
@@ -602,22 +614,60 @@ def major_and_gyoyang_course_eliminator(remaining_course):
     return general_elective_list
 
 general_elective_list = major_and_gyoyang_course_eliminator(remaining_course)
-print(general_elective_list)
+#print(general_elective_list)
 
 #TODO: (확인) 교양 등등 부족학점을 계산하는 식에 3항 연산식 (음수가 안나오게) 적용했는지 확인
 
+#교양
+#요건:작성 필요 (모두 동등)
+
+#이수: (영어의 경우 학점이 아닌 과목 개수이기 때문에 유의)
+#print("chapel_credit : ",chapel_credit)
+#print("christianity_credit : ",christianity_credit)
+#print("rc101_credit : ", rc101_credit)
+#print("english_course_taken: ",english_course_taken) #수업개수 2개, 1개, 0개
+#print("glcsubject_credits : ",glcsubject_credit)
+
+#필요: 계산 필요
+'''
 
 
 # ---------------출력----------------------
-'''
+
 student_name = input("학생의 성함을 입력해주세요 : ")
-result = "불가능"
+result = "가능" if (course_3_4000_needs==0 and major_needs==0 and 9-(ai_check[0]*3)<0 and ai_check[1]==1 and double_major_needs ==0 and minor_needs==0 and chapel_pass and christianity_pass and rc101_pass and english_pass and glcsubject_pass) else "불가능"
 print(f"----------{student_name}님의 {major}전공 자가진단 상세내역-----------\n")
-print(f"{student_name}님은 졸업 예비판정 시스템 상, 졸업이 {result}합니다.", student_name, result)
+print(f"{student_name}님은 졸업 예비판정 시스템 상, 졸업이 {result}합니다.")
 print()
-print(f"현재 이수한 {major}전공 학점은 {aie_major_list_length}점이며, 부족한 전공 학점은 {aie_total_needs}입니다.")
-print(f"현재 이수한 {major}전공의 전공기초 학점은 {aie_major_basic_length}점이며, 부족한 학점은 {aie_basic_needs}입니다")
-print(f"현재 이수한 {major}전공의 전공필수 학점은 {aie_major_required_length}점이며, 부족한 학점은 {aie_required_needs}입니다")
-print(f"현재 이수한 {major}전공의 전공선택 학점은 {aie_major_elective_length}점이며, 부족한 학점은 {aie_elective_needs}입니다")
-print(f"현재 이수한 {major}전공의 3,4천단위 학점은 {course_3_4000_length}점이며, 부족한 학점은 {course_3_4000_needs}입니다")
-'''
+print(f"현재 이수한 {major} 3,4천단위 학점은 {course_3_4000_length}점이며, 부족한 학점은 {course_3_4000_needs}입니다")
+print()
+print(f"현재 이수한 {major}전공 학점은 {(major_completed[0] + major_completed[1] + major_completed[2])}점이며, 부족한 전공 학점은 {major_needs}입니다.")
+print(f"현재 이수한 {major}전공의 전공기초 학점은 {major_completed[0]}점이며, 부족한 학점은 {major_needs[0]}입니다.")
+print(f"현재 이수한 {major}전공의 전공필수 학점은 {major_completed[1]}점이며, 부족한 학점은 {major_needs[1]}입니다.")
+print(f"현재 이수한 {major}전공의 전공선택 학점은 {major_completed[2]}점이며, 부족한 학점은 {major_needs[2]}입니다.")
+print()
+
+if(ai_advanced == 'Y'):
+    print(f"현재 이수한 AI융합심화전공 학점은 {ai_check[0]*3}점이며, 부족한 AI융합심화전공 학점은 {9-(ai_check[0]*3) if (9-(ai_check[0]*3))>0 else 0}입니다.")
+    print(f"현재 AI융합심화전공 이수를 위해 이수해야하는 인공지능개론과목을", ("이수한" if ai_check[1]==1 else "이수하지 않은"), "상태입니다.")
+    print()
+
+if(double_major != '없음'):
+    print(f"현재 이수한 {double_major}전공 학점은 {(double_major_completed[0] + double_major_completed[1] + double_major_completed[2])}점이며, 부족한 전공 학점은 {double_major_needs}입니다.")
+    print(f"현재 이수한 {double_major}전공의 전공기초 학점은 {double_major_completed[0]}점이며, 부족한 학점은 {double_major_needs[0]}입니다.")
+    print(f"현재 이수한 {double_major}전공의 전공필수 학점은 {double_major_completed[1]}점이며, 부족한 학점은 {double_major_needs[1]}입니다.")
+    print(f"현재 이수한 {double_major}전공의 전공선택 학점은 {double_major_completed[2]}점이며, 부족한 학점은 {double_major_needs[2]}입니다.")
+    print()
+
+if(minor_major != '없음'):
+    print(f"현재 이수한 {minor_major}전공 학점은 {(minor_completed[0] + minor_completed[1] + minor_completed[2])}점이며, 부족한 전공 학점은 {minor_needs}입니다.")
+    print(f"현재 이수한 {minor_major}전공의 전공기초 학점은 {minor_completed[0]}점이며, 부족한 학점은 {minor_needs[0]}입니다.")
+    print(f"현재 이수한 {minor_major}전공의 전공필수 학점은 {minor_completed[1]}점이며, 부족한 학점은 {minor_needs[1]}입니다.")
+    print(f"현재 이수한 {minor_major}전공의 전공선택 학점은 {minor_completed[2]}점이며, 부족한 학점은 {minor_needs[2]}입니다.")
+    print()
+
+print(f"현재 이수한 채플 학점은 {(chapel_credit)}점이며, 부족한 채플 학점은 {2-chapel_credit if (2-chapel_credit) > 0 else 0}입니다.")
+print(f"현재 이수한 기독교의 이해 학점은 {(christianity_credit)}점이며, 부족한 기독교의 이해 학점은 {3-christianity_credit if (3-christianity_credit) > 0 else 0}입니다.")
+print(f"현재 이수한 RC101 학점은 {(rc101_credit)}점이며, 부족한 RC101 학점은 {1-rc101_credit if (1-rc101_credit) > 0 else 0}입니다.")
+print(f"현재 이수한 GLC영어 학점은 {english_course_taken*3}점이며, 부족한 GLC영어 학점은 {(2 - english_course_taken)*3 if (2-english_course_taken) > 0 else 0}입니다.")
+print(f"현재 이수한 GLC교양 학점은 {glcsubject_credit}점이며, 부족한 GLC교양 학점은 {9 - glcsubject_credit if (9-glcsubject_credit) > 0 else 0}입니다.")
